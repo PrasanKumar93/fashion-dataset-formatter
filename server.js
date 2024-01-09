@@ -132,24 +132,32 @@ function groupDataAndImages(folderPathJSON, folderPathImages, outputFolderPath) 
         for (let i = 0; i < numberOfFolders; i++) {
             const folderName = `${i + 1}`.padStart(2, '0');
             const folderPath = path.join(outputFolderPath, folderName);
+            const folderProductPaths = [];
+
             if (!fs.existsSync(folderPath)) {
                 fs.mkdirSync(folderPath);
             }
+            console.log(`Folder: ${folderName}`);
 
             for (let j = 0; j < numberOfProductsInFolder; j++) {
-                console.log(`Folder: ${folderName}`);
                 if (productIndex < numberOfProducts) {
                     const product = products[productIndex];
                     const productPath = path.join(outputFolderPath, product);
                     const productDestPath = path.join(folderPath, product);
                     fs.renameSync(productPath, productDestPath);
+                    folderProductPaths.push(productDestPath);
                     productIndex++;
                 }
                 else {
                     break;
                 }
             }
+
+            //write folderProductPaths to a file
+            const folderProductPathsFilePath = path.join(folderPath, 'products-list.txt');
+            fs.writeFileSync(folderProductPathsFilePath, folderProductPaths.join('\n'));
         }
+
     }
 
 }
